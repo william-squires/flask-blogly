@@ -29,3 +29,8 @@ class User(db.Model):
     image_url = db.Column(
         db.String(200)
     )
+
+    @classmethod
+    def add_user(cls, user):
+        db.session.add(user)
+        db.session.commit()
