@@ -93,7 +93,7 @@ class UserViewTestCase(TestCase):
         """Tests showing user info"""
 
         with self.client as c:
-            response = c.get("/users/6")
+            response = c.get(f"/users/{self.user_id}")
             html = response.get_data(as_text=True)
             # breakpoint()
             self.assertIn("<h1>test1_first test1_last </h1>", html)
@@ -103,7 +103,7 @@ class UserViewTestCase(TestCase):
         """Tests showing edit user form"""
 
         with self.client as c:
-            response = c.get("/users/4/edit")         
+            response = c.get(f"/users/{self.user_id}/edit")         
             html = response.get_data(as_text=True)
           
             self.assertIn("<h1>Edit user information</h1>", html)
