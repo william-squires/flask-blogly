@@ -26,7 +26,7 @@ def show_home():
 def show_users():
     """Show list of all users"""
 
-    users = User.query.all()
+    users = User.query.order_by(User.id).all()
     return render_template ('user-list.html', users=users)
 
 @app.get('/users/new')
@@ -55,11 +55,31 @@ def show_user_info(user_id):
     return render_template("user-details.html", user=user)
 
 @app.get('/users/<int:user_id>/edit')
-def edit_user(user_id):
+def show_edit_user(user_id):
     """show edit page for user"""
 
     user = User.query.get_or_404(user_id)
 
     return render_template("edit-user-form.html", user=user)  
     
-      
+@app.post('/users/<int:user_id>/edit')
+def edit_user(user_id):
+    """Get data from edit page form and update in database"""
+    first_name = request.form["first_name"]
+    last_name = request.form["last_name"]
+    image_url = request.form["img_url"]
+
+    user = User().query.get(user_id)
+    User.edit_user(user, first_name, last_name, image_url)
+
+    return redirect('/users')
+
+
+@app.post('/users/<int:user_id>/delete')
+def delete_user(user_id):
+    """Delete user from database"""
+
+    user = User().query.get(user_id)
+    User.delete_user(user)
+
+    return redirect('/users')

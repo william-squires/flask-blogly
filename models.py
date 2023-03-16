@@ -34,3 +34,19 @@ class User(db.Model):
     def add_user(cls, user):
         db.session.add(user)
         db.session.commit()
+
+    @classmethod
+    def edit_user(cls, user, first, last, img):
+        """Takes user data and updates data in database"""
+        
+        user.first_name = first
+        user.last_name = last
+        user.image_url = img
+        db.session.commit()
+
+    @classmethod 
+    def delete_user(cls, user):
+        """Given a user, delete it from the database"""
+
+        db.session.delete(user)
+        db.session.commit()

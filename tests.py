@@ -1,11 +1,10 @@
+from models import User, db
+from app import app
+from unittest import TestCase
 import os
 
 os.environ["DATABASE_URL"] = "postgresql:///blogly_test"
 
-from unittest import TestCase
-
-from app import app, db
-from models import DEFAULT_IMAGE_URL, User
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -60,3 +59,22 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
+
+    def test_add_user(self):
+        """Tests adding a user to database"""
+
+        with self.client as c:
+            response = c.post("/users/new",
+                              data={"first_name": "Bob",
+                                    "last_name": "Smith",
+                                    "img_url": ""})
+
+            user = User().query.filter(
+                User.first_name == "Bob",
+                User.last_name == "Smith").one()
+
+            # Make sure user in database
+            self.assertEqual(user.first_name, "Bob")
+            self.assertEqual(user.last_name, "Smith")
+            # Make sure we redirect
+            self.assertAlmostEqual(response.status_code, 302)
