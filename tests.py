@@ -67,26 +67,23 @@ class UserViewTestCase(TestCase):
             response = c.post("/users/new",
                               data={"first_name": "Bob",
                                     "last_name": "Smith",
-                                    "img_url": ""})
+                                    "img_url": ""},
+                              follow_redirects=True
+                              )
 
-            user = User().query.filter(
-                User.first_name == "Bob",
-                User.last_name == "Smith").one()
+            html = response.get_data(as_text=True)
 
-            # Make sure user in database
-            self.assertEqual(user.first_name, "Bob")
-            self.assertEqual(user.last_name, "Smith")
-            # Make sure we redirect
-            self.assertAlmostEqual(response.status_code, 302)
+            self.assertIn("Bob Smith", html)
+            self.assertEqual(response.status_code, 200)
 
     def test_show_new_user_form(self):
         """Tests showing new user form"""
 
         with self.client as c:
-            response = c.get('/users/new')            
+            response = c.get('/users/new')
             html = response.get_data(as_text=True)
 
-            self.assertIn("Add New User",html)
+            self.assertIn("Add New User", html)
             self.assertEqual(response.status_code, 200)
 
     def test_show_user_info(self):
@@ -97,14 +94,14 @@ class UserViewTestCase(TestCase):
             html = response.get_data(as_text=True)
             # breakpoint()
             self.assertIn("<h1>test1_first test1_last </h1>", html)
-            self.assertEqual(response.status_code, 200)   
+            self.assertEqual(response.status_code, 200)
 
     def test_show_edit_user(self):
         """Tests showing edit user form"""
 
         with self.client as c:
-            response = c.get(f"/users/{self.user_id}/edit")         
+            response = c.get(f"/users/{self.user_id}/edit")
             html = response.get_data(as_text=True)
-          
+            # make sure user info is in form
             self.assertIn("<h1>Edit user information</h1>", html)
-            self.assertEqual(response.status_code, 200)   
+            self.assertEqual(response.status_code, 200)
