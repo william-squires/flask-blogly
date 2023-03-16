@@ -78,3 +78,33 @@ class UserViewTestCase(TestCase):
             self.assertEqual(user.last_name, "Smith")
             # Make sure we redirect
             self.assertAlmostEqual(response.status_code, 302)
+
+    def test_show_new_user_form(self):
+        """Tests showing new user form"""
+
+        with self.client as c:
+            response = c.get('/users/new')            
+            html = response.get_data(as_text=True)
+
+            self.assertIn("Add New User",html)
+            self.assertEqual(response.status_code, 200)
+
+    def test_show_user_info(self):
+        """Tests showing user info"""
+
+        with self.client as c:
+            response = c.get("/users/6")
+            html = response.get_data(as_text=True)
+            # breakpoint()
+            self.assertIn("<h1>test1_first test1_last </h1>", html)
+            self.assertEqual(response.status_code, 200)   
+
+    def test_show_edit_user(self):
+        """Tests showing edit user form"""
+
+        with self.client as c:
+            response = c.get("/users/4/edit")         
+            html = response.get_data(as_text=True)
+          
+            self.assertIn("<h1>Edit user information</h1>", html)
+            self.assertEqual(response.status_code, 200)   
