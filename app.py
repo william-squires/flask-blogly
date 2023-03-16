@@ -46,3 +46,20 @@ def add_new_user():
     User.add_user(user)
 
     return redirect('/users')
+
+@app.get('/users/<int:user_id>')
+def show_user_info(user_id):
+    """Shows infomation about user"""
+    user = User.query.get_or_404(user_id)
+
+    return render_template("user-details.html", user=user)
+
+@app.get('/users/<int:user_id>/edit')
+def edit_user(user_id):
+    """show edit page for user"""
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template("edit-user-form.html", user=user)  
+    
+      
