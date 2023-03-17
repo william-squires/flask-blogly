@@ -14,9 +14,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     "DATABASE_URL", 'postgresql:///blogly')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
+app.config['SECRET_KEY'] = "shhhh-quiet!"
 
 connect_db(app)
 
+# debug = DebugToolbarExtension(app)
 
 @app.get("/")
 def show_home():
@@ -81,8 +83,8 @@ def edit_user(user_id):
     last_name = request.form["last_name"]
     image_url = request.form["img_url"]
 
-    user = User().query.get_or_404(user_id)
-    User.edit_user(user, first_name, last_name, image_url)
+    user = User.query.get_or_404(user_id)
+    user.edit_user(first_name, last_name, image_url)
 
     return redirect('/users')
 
@@ -91,7 +93,73 @@ def edit_user(user_id):
 def delete_user(user_id):
     """Delete user from database"""
 
-    user = User().query.get_or_404(user_id)
-    User.delete_user(user)
+    user = User.query.get_or_404(user_id)
+    
+    
+    db.session.delete(user)
+    db.session.commit()
 
     return redirect('/users')
+
+######################################################
+@app.get('/users/<int:user_id>/posts/new')
+def show_new_post_form(user_id):
+    """Showd new post form for user"""
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template("new-post-form.html", user=user)
+
+@app.post('/users/<int:user_id>/posts/new')
+def create_new_post(user_id):
+    """Creates new user post"""
+
+    title = request.form["title"]
+    content = request.form["content"]
+
+    post = Post(title=title, content=content, user_id=user_id)
+
+    Post.add_new_post(post)
+
+    return redirect(f'/users/{ user_id }')    
+
+@app.get('/posts/<int:post_id>')
+def show_post_info(post_id):
+    """Shows post information for an individual post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    return render_template('post-detail-page.html', post=post)
+
+@app.get('/posts/<int:post_id>/edit')
+def show_post_edit_form(post_id):
+    """Shows form to edit post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    return render_template('post-edit-page.html', post=post)
+
+@app.post('/posts/<int:post_id>/edit')
+def edit_post(post_id):
+    """Updates post in database"""
+
+    title = request.form["title"]
+    content = request.form["content"]
+    post = Post.query.get_or_404(post_id)
+
+    post.edit_post(title, content)
+
+    return redirect(f'/users/{post.user.id}')
+
+@app.post('/posts/<int:post_id>/delete')
+def delete_post(post_id):
+    """Deletes post"""
+
+    post = Post.query.get_or_404(post_id)
+    id = post.user.id
+
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect(f'/users/{id}')
+

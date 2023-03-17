@@ -2,24 +2,21 @@
 
 {% block title %}Edit User{% endblock %}
 
-{% block content %} 
+{% block content %}
 
 <h1>Edit user information</h1>
-<form method="POST", action="/users/{{ user.id }}/edit">
+<form method="POST" , action="/users/{{ user.id }}/edit">
     <div class="col-6">
         <label for="first-name">First Name</label>
-        <input id="first-name" type="text" name="first_name" value="{{ user.first_name }}" 
-            class="form-control"> <br>
+        <input id="first-name" type="text" name="first_name" value="{{ user.first_name }}" class="form-control"> <br>
     </div>
     <div class="col-6">
         <label for="last-name">Last Name</label>
-        <input id="last-name" type="text" name="last_name" value="{{ user.last_name }}"
-            class="form-control"> <br>
+        <input id="last-name" type="text" name="last_name" value="{{ user.last_name }}" class="form-control"> <br>
     </div>
     <div class="col-6">
         <label for="img_url">Profile Pic Url</label>
-        <input id="img_url" type="url" name="img_url" value="{{ user.image_url }}"
-            class="form-control">
+        <input id="img_url" type="url" name="img_url" value="{{ user.image_url }}" class="form-control">
     </div>
     <br>
     <a class="btn btn-light" href="/users/{{ user.id }}">Cancel</a>

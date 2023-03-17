@@ -11,13 +11,23 @@
 
         <form action="/users" style="display:inline">
             <button type="submit" class="btn btn-success">HOME</button>
-        </form>
-        
+        </form><br>
+
         <a href="/users/{{ user.id }}/edit" class="btn btn-primary">EDIT</a>
 
         <form method="POST" action="/users/{{ user.id }}/delete" style="display:inline">
             <button type="submit" class="btn btn-danger">DELETE</button>
+        </form> <br>
+        <h2>Posts</h2>
+        <ul>
+            {% for posts in user.posts %}
+            <li> <a href="/posts/{{ posts.id }}">{{ posts.title }}</a></li>
+            {% endfor %}
+        </ul>
+        <form method="GET" action="/users/{{ user.id }}/posts/new" style="display:inline">
+            <button type="submit" class="btn btn-success">Add Post</button>
         </form>
     </div>
 </div>
+
 {% endblock %}

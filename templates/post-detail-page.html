@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Add User{% endblock %}
+{% block content %}
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p> <br>
+<p><i>By {{ post.user.first_name }} {{ post.user.last_name }}</i></p>
+<form method="POST" , action="/users/{{ post.user.id }}" style="display: inline">
+    <button class="btn btn-light" type="submit">Cancel</button>
+</form>
+<form method="GET" , action="/posts/{{ post.id }}/edit" style="display: inline">
+    <button class="btn btn-primary" type="submit">Edit</button>
+</form>
+<form method="POST" , action="/posts/{{ post.id }}/delete" style="display: inline">
+    <button class="btn btn-danger" type="submit">Delete</button>
+</form>
+{% endblock %}

@@ -37,27 +37,21 @@ class User(db.Model):
         nullable=False
     )
 
+    posts = db.relationship("Post", backref="user")
+
     @classmethod
     def add_user(cls, user):
         """Adds user to database"""
         db.session.add(user)
         db.session.commit()
 
-    @classmethod
-    def edit_user(cls, user, first, last, img):
+    def edit_user(self, first, last, img):
         """Takes user data and updates data in database"""
 
-        user.first_name = first
-        user.last_name = last
-        user.image_url = img
-        db.session.commit()
-
-    @classmethod
-    def delete_user(cls, user):
-        """Given a user, delete it from the database"""
-
-        db.session.delete(user)
-        db.session.commit()
+        self.first_name = first
+        self.last_name = last
+        self.image_url = img
+        
 
 
 class Post(db.Model):
@@ -85,3 +79,24 @@ class Post(db.Model):
         nullable=False,
         server_default=db.func.now()
     )
+    
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
+    @classmethod
+    def add_new_post(cls, post):
+        """Adds new post to user profile"""
+
+        db.session.add(post)
+        db.session.commit()
+
+    def edit_post(self, title, content):
+        """Edits post information"""       
+        
+        self.title = title
+        self.content = content
+
+        db.session.commit()
